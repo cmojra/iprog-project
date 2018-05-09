@@ -7,6 +7,7 @@ const Model = function () {
   let currentCity = "";
   let weatherList = [];
   let days = 0;
+  let favorites = [];
 
   // function for autocompleting input in searchbar
   this.autoComplete = function (str){
@@ -38,6 +39,33 @@ const Model = function () {
       return results;
     }
   }
+
+  this.setFavorites = function(obj){
+    for(var i=0; i< favorites.length; i++){
+        if(obj.id === favorites[i].id){
+          alert("You already added this city as your favorite");
+          return;
+        }
+      }
+    favorites.push(obj);
+    console.log(favorites);
+    notifyObservers();
+  }
+
+  this.getFavorites = function(){
+    return favorites;
+  }
+
+  this.removeFromFavorites = function(obj){
+    for(var i=0; i< favorites.length; i++){
+      if(obj.id === favorites[i].id){
+        favorites.splice(i, 1);
+        return;
+      }
+    }
+    notifyObservers();
+  }
+
   this.setSelectedDays = function(num){
     days = num;
     notifyObservers();

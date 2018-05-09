@@ -4,10 +4,20 @@
       <div class="col-12 col-md-4 p-3 mt-5" id="results">
 
         <h6> {{ msg }} </h6>
-
-        <div class="col-12">
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+          </div>
+          <router-link class='btn btn-primary' to="/destinations" exact>Submit</router-link>
+        </form>
+ <!--       <div class="col-12">
              <router-link class='btn btn-primary' to="/destinations" exact>Plan your perfect holiday</router-link>
-  			</div>
+  			</div>-->
 
       </div>
     </div>

@@ -5,10 +5,15 @@
 
         <div v-for="(city, index) in weatherList" class="col-12 col-md-4 mt-4">
           <div id="result2">
-            <div class="row pb-3">
-              <div class="col-1"  @click="remove(weatherList[weatherList.length - index -1].id)">
+            <div class="row">
+              <div class="col-1 text-left"  @click="remove(weatherList[weatherList.length - index -1].id)">
                 <button class='btn btn-primary'>X</button>
               </div>
+              <div class="col-1 text-right" @click="addToFavorites(weatherList[weatherList.length - index -1])">
+                <button class='btn btn-primary'>+</button>
+              </div>
+            </div>
+            <div class="row pb-3">
 
               <div class="col-10" @click="setCurrentCity(weatherList[weatherList.length - index -1].id)">
                 <router-link v-bind:to="'/detailedview/' + weatherList[weatherList.length - index -1].id">
@@ -73,6 +78,10 @@ import {modelInstance} from "./Model";
 
       update(){
         this.weatherList = modelInstance.getWeatherList()
+      },
+
+      addToFavorites(id){
+        modelInstance.setFavorites(id);
       }
 
     }

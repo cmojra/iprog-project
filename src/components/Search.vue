@@ -23,9 +23,29 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <h3>Favorites</h3>
+              <div class="col-12" v-for="(city, index) in favorites">
+                <div class="row">
+                  <div class="col-1" @click="removeFavorite(favorites[index])">
+                   <h6 id="remove">X</h6>
+                  </div>
+                 <div class="col-10" @click="setCurrentCity(favorites[index].id)">
+                    <router-link v-bind:to="'/detailedview/' + favorites[index].id">{{favorites[index].name}}</router-link>
+                 </div>
+               </div>
+              </div>
+            </div>
+           <!-- <div class="row">
+              <h3>Favorites</h3>
+              <div v-for="(city, index) in favorites">
+                {{cities[index].name}}
+              </div>
+            </div>-->
 					</div>
 
 				</div>
+
 
 			</nav>
 
@@ -41,6 +61,7 @@ import {modelInstance} from "./Model";
     // component is created that's a good place to setup model observer
     created() {
       modelInstance.addObserver(this)
+      this.favorites = modelInstance.getFavorites()
     },
 
     // this is called when component is removed destroyed
@@ -60,14 +81,15 @@ import {modelInstance} from "./Model";
         numbers: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
         cities: [],
         citySelected: "",
-        search: ""
+        search: "",
+        favorites: []
       }
     },
 
     methods: {
 
       update(){
-
+        this.favorites = modelInstance.getFavorites();
       },
 
       getSearchOptions(str){
@@ -90,12 +112,29 @@ import {modelInstance} from "./Model";
 
       setDays(number){
         this.days = number
+      },
+
+      setCurrentCity(id){
+        modelInstance.setCurrentCity(id);
+      },
+
+      removeFavorite(obj){
+        modelInstance.removeFromFavorites(obj);
       }
     }
   }
 </script>
 
 <style scoped>
+
+  a:hover,  a:visited,  a:link,  a:active {
+    color: white;
+    text-decoration: none;
+  }
+
+  #remove:hover{
+    color: red;
+  }
 
   #cities{
     background: rgba(0, 0, 0, 0.8);
