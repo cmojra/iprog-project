@@ -28,7 +28,7 @@
               <div class="col-12" v-for="(city, index) in favorites">
                 <div class="row">
                   <div class="col-1" @click="removeFavorite(favorites[index])">
-                   <h6 id="remove">X</h6>
+                   <h6 id="remove">&#9746</h6>
                   </div>
                  <div class="col-10" @click="setCurrentCity(favorites[index].id)">
                     <router-link v-bind:to="'/detailedview/' + favorites[index].id">{{favorites[index].name}}</router-link>
@@ -132,8 +132,13 @@ import {modelInstance} from "./Model";
     text-decoration: none;
   }
 
+  #remove{
+    font-size: 20px;
+  }
+
   #remove:hover{
-    color: red;
+    color: black;
+    cursor: pointer;
   }
 
   #cities{
@@ -173,10 +178,6 @@ import {modelInstance} from "./Model";
 
   #navBtn{
     background-color: rgba(119,136,153, 0.8);
-  }
-
-  #remove:hover{
-    background-color: red;
   }
 
   a:hover,  a:visited,  a:link,  a:active {
