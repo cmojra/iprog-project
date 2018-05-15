@@ -20,7 +20,7 @@ import DetailedView from './components/DetailedView.vue';
 
 
 export default {
-//  name: 'App'
+//  name: 'App'  
   components: {
        'welcome': Welcome,
        'detailedview': DetailedView,
