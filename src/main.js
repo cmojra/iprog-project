@@ -6,12 +6,16 @@ import Routes from './router'
 import VueChartkick from'vue-chartkick'
 import Chart from 'chart.js'
 
+//Added
+import Firebase from 'firebase'
+
 // Use packages
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.config.productionTip = false
 Vue.use(VueChartkick, {adapter: Chart})
+Vue.use(Firebase);
 
 
 // Register routes

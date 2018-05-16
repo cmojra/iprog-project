@@ -19,6 +19,12 @@ const Model = function () {
   let days = 0;
   let favorites = [];
 
+  var storage = firebase.storage();
+  //var storageRef = storage.ref();
+  //var imageRef = storageRef.child('bigbang.jpg');
+  var httpsReference = storage.refFromURL('https://firebasestorage.googleapis.com/v0/b/iprog-project-76738.appspot.com/o/bigbang.jpg?alt=media&token=be91f910-e935-4b20-8255-4c7cbb524a61');
+  var imgUrl = 'https://firebasestorage.googleapis.com/v0/b/iprog-project-76738.appspot.com/o/bigbang.jpg?alt=media&token=be91f910-e935-4b20-8255-4c7cbb524a61';
+
   // function for autocompleting input in searchbar
   this.autoComplete = function (str){
     var results = [];
