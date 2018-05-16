@@ -104,7 +104,7 @@ const Model = function () {
     for(var i=0; i< favorites.length; i++){
       if(obj.id === favorites[i].id){
         favorites.splice(i, 1);
-        db.collection('favourites' + userId).doc('city' + obj.id).delete().then(function(){
+        db.collection('favourites' + this.getUser()).doc('city' + obj.id).delete().then(function(){
           console.log("successfully deleted")
           alert("city removed from favorites list");
         }).catch(function(error){
