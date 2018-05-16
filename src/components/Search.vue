@@ -105,6 +105,7 @@ import {modelInstance} from "./Model";
 
       update(){
         //this.favorites = modelInstance.getFavorites();
+        //this.favorites = [];
         //this.favorites = modelInstance.getFavorites();
       },
 

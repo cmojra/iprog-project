@@ -88,6 +88,7 @@ const Model = function () {
   }
 
   this.getFavorites = function(){
+    favorites = [];
     db.collection('favourites' + this.getUser()).get().then(function(querySnapshot){
           querySnapshot.forEach(function(doc) {
             const data = {
