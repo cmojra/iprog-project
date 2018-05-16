@@ -18,10 +18,14 @@ const Model = function () {
   let weatherList = [];
   let days = 0;
   let favorites = [];
+  let userId = 0 || localStorage.getItem("userId");
 
   var storage = firebase.storage();
+  var storageRef = firebase.storage().ref();
   //var storageRef = storage.ref();
   //var imageRef = storageRef.child('bigbang.jpg');
+
+  var list = storageRef.child('city.list.json')
   var httpsReference = storage.refFromURL('https://firebasestorage.googleapis.com/v0/b/iprog-project-76738.appspot.com/o/bigbang.jpg?alt=media&token=be91f910-e935-4b20-8255-4c7cbb524a61');
   var imgUrl = 'https://firebasestorage.googleapis.com/v0/b/iprog-project-76738.appspot.com/o/bigbang.jpg?alt=media&token=be91f910-e935-4b20-8255-4c7cbb524a61';
 
@@ -45,7 +49,6 @@ const Model = function () {
     }
     else if(nrOfResults > 10) {
       nrOfResults = 10;
-      console.log("hej");
       results = results.slice(0,nrOfResults);
       results.sort();
       return results;
@@ -57,10 +60,8 @@ const Model = function () {
   }
 
   this.setFavorites = function(obj){
-    console.log("hej");
-    console.log(favorites.length);
-
-    db.collection('favourites/').doc("city" + obj.id).set({
+    console.log(this.getUser());
+    db.collection('favourites' + this.getUser() + '/').doc("city" + obj.id).set({
       id: obj.id,
       name: obj.name
     })
@@ -76,13 +77,6 @@ const Model = function () {
       id: obj.id,
       name: obj.name
     };
-
-    // Get a key for a new Post.
-    //var newPostKey = firebase.database().ref().child('favourites').push().key;
-
-    // Write the new post's data simultaneously in the posts list and the user's post list.
-    //var updates = {};
-    console.log("set")
     for(var i=0; i<favorites.length; i++){
       if(favData.id === favorites[i].id){
           alert("You already added this city");
@@ -90,12 +84,11 @@ const Model = function () {
         }
     }
     favorites.push(favData);
-    console.log(favData);
     notifyObservers();
   }
 
   this.getFavorites = function(){
-    db.collection('favourites').get().then(function(querySnapshot){
+    db.collection('favourites' + this.getUser()).get().then(function(querySnapshot){
           querySnapshot.forEach(function(doc) {
             const data = {
               'id': doc.data().id,
@@ -111,7 +104,7 @@ const Model = function () {
     for(var i=0; i< favorites.length; i++){
       if(obj.id === favorites[i].id){
         favorites.splice(i, 1);
-        db.collection('favourites').doc('city' + obj.id).delete().then(function(){
+        db.collection('favourites' + userId).doc('city' + obj.id).delete().then(function(){
           console.log("successfully deleted")
           alert("city removed from favorites list");
         }).catch(function(error){
@@ -122,6 +115,19 @@ const Model = function () {
       }
     }
     notifyObservers();
+  }
+
+  this.setUser = function(id){
+    userId = id;
+    localStorage.setItem('userId', userId);
+    notifyObservers();
+  }
+
+  this.getUser = function(){
+    if(userId != 0){
+      userId = localStorage.getItem("userId");
+    }
+    return userId;
   }
 
   this.setSelectedDays = function(num){
@@ -168,6 +174,18 @@ const Model = function () {
     return weatherList;
   }
 
+  // remove city from list of destinations
+  this.removeFromWeatherList = function(id){
+    for(var i=0; i< weatherList.length; i++){
+      if(id === weatherList[i].id){
+        weatherList.splice(i, 1);
+        localStorage.setItem("weatherList", JSON.stringify(weatherList));
+        return;
+      }
+    }
+    notifyObservers();
+  }
+
   // calculating the temperature/cloud/ or humidity values for the selected amount of days
   this.getValue = function(num, humidity, temp, clouds, humList, tempList, cloudList){
     if(humidity === true){
@@ -189,18 +207,6 @@ const Model = function () {
       }
       return (temp/(num*8)) + " C";
     }
-  }
-
-  // remove city from list of destinations
-  this.removeFromWeatherList = function(id){
-    for(var i=0; i< weatherList.length; i++){
-      if(id === weatherList[i].id){
-        weatherList.splice(i, 1);
-        localStorage.setItem("weatherList", JSON.stringify(weatherList));
-        return;
-      }
-    }
-    notifyObservers();
   }
 
   this.setCurrentCity = function(id){

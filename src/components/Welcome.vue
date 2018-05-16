@@ -6,14 +6,16 @@
         <h6> {{ msg }} </h6>
         <form>
           <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+            <label for="exampleInputEmail1">User ID</label>
+            <input v-model="message" type="email" class="form-control" id="exampleInputEmail1" ref="user" aria-describedby="emailHelp" placeholder="Enter user ID">
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">Password</label>
             <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
           </div>
-          <router-link class='btn btn-primary' to="/destinations" exact>Submit</router-link>
+          <div class="submitting" @click="clicked()">
+            <router-link class='btn btn-primary' to="/destinations" exact>Submit</router-link>
+          </div>
         </form>
  <!--       <div class="col-12">
              <router-link class='btn btn-primary' to="/destinations" exact>Plan your perfect holiday</router-link>
@@ -25,11 +27,23 @@
 </template>
 
 <script>
+import {modelInstance} from "./Model";
+
   export default {
+
     data() {
       return {
+        message: "",
         msg: 'Welcome to the Vacation Weather Forecast where you can plan you perfect holiday according' +
             ' to the weather forecast coming from us. To get started, please press the button below'
+      }
+      
+    }, 
+
+    methods: {
+      clicked(){
+        console.log("clicked");
+        modelInstance.setUser(this.message);
       }
     }
   }
