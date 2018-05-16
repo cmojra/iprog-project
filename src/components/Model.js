@@ -1,5 +1,15 @@
 
-import json from "./city.list.json"
+import json from "./city.list.json";
+import db from './firebaseInit';
+import firebase from 'firebase';
+
+//import firebase from 'firebase'
+//import 'firebase/firestore'
+import firebaseConfig from './firebaseConfig'
+//const firebaseApp = firebase.initializeApp(firebaseConfig)
+//export default firebaseApp.firestore()
+
+//import * as firebase from './firebaseConfig';
 const Model = function () {
 
   let observers = [];
@@ -41,18 +51,53 @@ const Model = function () {
   }
 
   this.setFavorites = function(obj){
-    for(var i=0; i< favorites.length; i++){
-        if(obj.id === favorites[i].id){
-          alert("You already added this city as your favorite");
+    console.log("hej");
+    console.log(favorites.length);
+
+    db.collection('favourites/').doc("city" + obj.id).set({
+      id: obj.id,
+      name: obj.name
+    })
+
+    .then(function(){
+      console.log("success");
+    })
+    .catch(function(error){
+      console.error("error", error);
+    });
+
+    var favData = {
+      id: obj.id,
+      name: obj.name
+    };
+
+    // Get a key for a new Post.
+    //var newPostKey = firebase.database().ref().child('favourites').push().key;
+
+    // Write the new post's data simultaneously in the posts list and the user's post list.
+    //var updates = {};
+    console.log("set")
+    for(var i=0; i<favorites.length; i++){
+      if(favData.id === favorites[i].id){
+          alert("You already added this city");
           return;
         }
-      }
-    favorites.push(obj);
-    console.log(favorites);
+    }
+    favorites.push(favData);
+    console.log(favData);
     notifyObservers();
   }
 
   this.getFavorites = function(){
+    db.collection('favourites').get().then(function(querySnapshot){
+          querySnapshot.forEach(function(doc) {
+            const data = {
+              'id': doc.data().id,
+              'name': doc.data().name
+            }
+            favorites.push(data)
+          })
+        })
     return favorites;
   }
 
@@ -60,6 +105,13 @@ const Model = function () {
     for(var i=0; i< favorites.length; i++){
       if(obj.id === favorites[i].id){
         favorites.splice(i, 1);
+        db.collection('favourites').doc('city' + obj.id).delete().then(function(){
+          console.log("successfully deleted")
+          alert("city removed from favorites list");
+        }).catch(function(error){
+          alert("failed to remove city from favorites");
+          console.error("error removing favorites", error);
+        });
         return;
       }
     }

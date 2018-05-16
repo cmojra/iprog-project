@@ -80,8 +80,8 @@ import {modelInstance} from "./Model";
         this.weatherList = modelInstance.getWeatherList()
       },
 
-      addToFavorites(id){
-        modelInstance.setFavorites(id);
+      addToFavorites(obj){
+        modelInstance.setFavorites(obj);
       }
 
     }

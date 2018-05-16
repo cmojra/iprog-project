@@ -55,13 +55,14 @@
 
 <script>
 import {modelInstance} from "./Model";
+//  import db from './firebaseInit';
   export default {
     //props: ['model'],
     // this methods is called by React lifecycle when the
     // component is created that's a good place to setup model observer
     created() {
       modelInstance.addObserver(this)
-      this.favorites = modelInstance.getFavorites()
+      this.favorites = modelInstance.getFavorites();
     },
 
     // this is called when component is removed destroyed
@@ -71,7 +72,7 @@ import {modelInstance} from "./Model";
     },
 
     mounted(){
-
+      //this.favorites = modelInstance.getFavorites();
     },
 
     // we define and initalise the data we want to use and modify in the component
@@ -82,14 +83,29 @@ import {modelInstance} from "./Model";
         cities: [],
         citySelected: "",
         search: "",
-        favorites: []
+        favorites: [],
       }
     },
+
+  /*created () {
+        db.collection('favourites').orderBy('name').get().then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            console.log(doc)
+            const data = {
+              'id': doc.id, //firebase id
+              'fav_id': doc.data().id,
+              'name': doc.data().name
+            }
+            this.testing.push(data)
+          })
+        })
+      },*/
 
     methods: {
 
       update(){
-        this.favorites = modelInstance.getFavorites();
+        //this.favorites = modelInstance.getFavorites();
+        //this.favorites = modelInstance.getFavorites();
       },
 
       getSearchOptions(str){
