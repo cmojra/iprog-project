@@ -36,12 +36,6 @@
                </div>
               </div>
             </div>
-           <!-- <div class="row">
-              <h3>Favorites</h3>
-              <div v-for="(city, index) in favorites">
-                {{cities[index].name}}
-              </div>
-            </div>-->
 					</div>
 
 				</div>
@@ -55,9 +49,7 @@
 
 <script>
 import {modelInstance} from "./Model";
-//  import db from './firebaseInit';
   export default {
-    //props: ['model'],
     // this methods is called by React lifecycle when the
     // component is created that's a good place to setup model observer
     created() {
@@ -69,10 +61,6 @@ import {modelInstance} from "./Model";
     // good place to remove observer
     beforeDestroy() {
       modelInstance.removeObserver(this)
-    },
-
-    mounted(){
-      //this.favorites = modelInstance.getFavorites();
     },
 
     // we define and initalise the data we want to use and modify in the component
@@ -87,33 +75,14 @@ import {modelInstance} from "./Model";
       }
     },
 
-  /*created () {
-        db.collection('favourites').orderBy('name').get().then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            console.log(doc)
-            const data = {
-              'id': doc.id, //firebase id
-              'fav_id': doc.data().id,
-              'name': doc.data().name
-            }
-            this.testing.push(data)
-          })
-        })
-      },*/
-
     methods: {
-
-      update(){
-        //this.favorites = modelInstance.getFavorites();
-        //this.favorites = [];
-        //this.favorites = modelInstance.getFavorites();
-      },
 
       getUser(){
         return modelInstance.getUser();
       },
 
       getSearchOptions(str){
+        console.log("enter")
         this.cities = modelInstance.autoComplete(str)
       },
 

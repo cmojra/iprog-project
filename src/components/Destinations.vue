@@ -3,6 +3,7 @@
 		<div class="container-fluid">
       <div class="row">
 
+        <em v-if="loading === true">Loading...</em>
         <div v-for="(city, index) in weatherList" class="col-12 col-md-4 mt-4 pr-1">
           <div id="result2">
             <div class="row">
@@ -50,7 +51,12 @@ import {modelInstance} from "./Model";
 
     created() {
       modelInstance.addObserver(this)
+      this.loading = modelInstance.getLoading();
       this.weatherList = modelInstance.getWeatherList();
+    },
+
+    mounted(){
+      this.loading = modelInstance.getLoading();
     },
 
     beforeDestroy() {
@@ -62,7 +68,8 @@ import {modelInstance} from "./Model";
         active: false,
         status: 'INITIAL',
         search: "",
-        weatherList: []
+        weatherList: [],
+        loading: true,
       }
     },
 
@@ -109,6 +116,7 @@ a:hover,  a:visited,  a:link,  a:active {
 #title{
   padding-bottom: 5px;
 }
+
 
 .star{
   background: rgba(0, 0, 0, 0.1);

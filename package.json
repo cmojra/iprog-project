@@ -15,6 +15,7 @@
     "firebase": "^4.13.1",
     "hchs-vue-charts": "^1.2.8",
     "npm": "^5.8.0",
+    "to-camel-case": "^1.0.0",
     "vue": "^2.5.11",
     "vue-chart.js": "^0.2.0",
     "vue-chartjs": "^3.3.1",

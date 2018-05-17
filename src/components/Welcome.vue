@@ -9,10 +9,6 @@
             <label for="exampleInputEmail1">User ID</label>
             <input v-model="message" type="email" class="form-control" id="exampleInputEmail1" ref="user" aria-describedby="emailHelp" placeholder="Enter user ID">
           </div>
-          <!--<div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-          </div>-->
           <div class="submitting" @click="clicked()">
             <div v-if="this.message == 1 || this.message == 2">
               <router-link class='btn btn-primary' to="/destinations" exact>Submit</router-link>
@@ -20,10 +16,6 @@
             <div v-else>User ID must be either 1 or 2</div>
           </div>
         </form>
- <!--       <div class="col-12">
-             <router-link class='btn btn-primary' to="/destinations" exact>Plan your perfect holiday</router-link>
-  			</div>-->
-
       </div>
     </div>
   </div>
@@ -45,8 +37,8 @@ import {modelInstance} from "./Model";
 
     methods: {
       clicked(){
-        console.log("clicked");
         modelInstance.setUser(this.message);
+        modelInstance.getCities();
       }
     }
   }

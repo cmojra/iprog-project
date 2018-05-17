@@ -13,36 +13,47 @@ import firebaseConfig from './firebaseConfig'
 const Model = function () {
 
   let observers = [];
-  let cities = json;
+  let cities = [];
   let currentCity = "";
   let weatherList = [];
   let days = 0;
   let favorites = [];
   let userId = 0 || localStorage.getItem("userId");
+  var database = firebase.database();
+  let results = [];
+  let loading = true;
 
-  var storage = firebase.storage();
-  var storageRef = firebase.storage().ref();
-  //var storageRef = storage.ref();
-  //var imageRef = storageRef.child('bigbang.jpg');
+  this.getLoading = function(){
+    return loading;
+  }
 
-  var list = storageRef.child('city.list.json')
-  var httpsReference = storage.refFromURL('https://firebasestorage.googleapis.com/v0/b/iprog-project-76738.appspot.com/o/bigbang.jpg?alt=media&token=be91f910-e935-4b20-8255-4c7cbb524a61');
-  var imgUrl = 'https://firebasestorage.googleapis.com/v0/b/iprog-project-76738.appspot.com/o/bigbang.jpg?alt=media&token=be91f910-e935-4b20-8255-4c7cbb524a61';
+  // we choose how many cities we want to be able to search from. more cities -> slower
+  // the cities are then taken from the database (containing the JSON-file) in Firebase put in a special list called 'cities' 
+  this.getCities = function(){
+    // we want to be able to search from 5000 cities. this can be changed but affects speed. database contains ca 250 000 cities
+    for(var i=0; i<5000;i++){
+      database.ref(i).on('value', function(snapshot) {
+        cities.push(snapshot.val());
+      });
+    }
+  }
 
-  // function for autocompleting input in searchbar
+
+  //autocompletion of cities in the search bar
   this.autoComplete = function (str){
     var results = [];
     var nrOfResults = 1;
-    str = str.toLowerCase();
-    if (str.length >= 1) {
+
+   if (str.length >= 1) {
       nrOfResults = 0;
-      for (var i = 0; i < json.length; i++) {
-        if (json[i].name.toLowerCase().startsWith(str)) {
-          results.push(json[i]);
+      for (var i = 0; i < cities.length; i++) {
+        if (cities[i].name.startsWith(str)) {
+          results.push(cities[i]);
           nrOfResults++;
         }
       }
     }
+    //we only want to show 10 cities in the autocompletion of the search bar
     if(nrOfResults < 10 && nrOfResults >= 1) {
       results.sort();
       return results;
@@ -59,13 +70,13 @@ const Model = function () {
     }
   }
 
+  // the users favorite-cities are set here
   this.setFavorites = function(obj){
     console.log(this.getUser());
     db.collection('favourites' + this.getUser() + '/').doc("city" + obj.id).set({
       id: obj.id,
       name: obj.name
     })
-
     .then(function(){
       console.log("success");
     })
@@ -73,6 +84,7 @@ const Model = function () {
       console.error("error", error);
     });
 
+    // we only need the id and name of the cities in our favorites-list
     var favData = {
       id: obj.id,
       name: obj.name
@@ -87,6 +99,7 @@ const Model = function () {
     notifyObservers();
   }
 
+  // collect the users favorites from the database
   this.getFavorites = function(){
     favorites = [];
     db.collection('favourites' + this.getUser()).get().then(function(querySnapshot){
@@ -101,13 +114,13 @@ const Model = function () {
     return favorites;
   }
 
+  // remove one of the users favorites from the favorites list
   this.removeFromFavorites = function(obj){
     for(var i=0; i< favorites.length; i++){
       if(obj.id === favorites[i].id){
         favorites.splice(i, 1);
         db.collection('favourites' + this.getUser()).doc('city' + obj.id).delete().then(function(){
           console.log("successfully deleted")
-          alert("city removed from favorites list");
         }).catch(function(error){
           alert("failed to remove city from favorites");
           console.error("error removing favorites", error);
@@ -118,6 +131,7 @@ const Model = function () {
     notifyObservers();
   }
 
+  // sets the current user
   this.setUser = function(id){
     userId = id;
     localStorage.setItem('userId', userId);
@@ -140,8 +154,8 @@ const Model = function () {
     return days;
   }
 
-  // pushing the weather object to our weatherList containing the weather of the destinations the user has chosen
   this.setWeatherList = function (obj){
+    // adding the weather object to the users list of searched cities in the database
     db.collection('Searches' + this.getUser() + '/').doc("city" + obj.id).set({
       id: obj.id,
       name: obj.name,
@@ -155,6 +169,7 @@ const Model = function () {
       console.error("error", error);
     });
 
+    // pushing the weather object to the local weatherList which is used in Destinations.vue
     var weatherData = {
       id: obj.id,
       name: obj.name,
@@ -177,29 +192,12 @@ const Model = function () {
     notifyObservers();
   }
 
-    /*if(weatherList.length === 0){
-      weatherList.push(weather);
-      localStorage.setItem("weatherList", JSON.stringify(weatherList));
-    }
-    else{
-      for(var i=0; i< weatherList.length; i++){
-        if(weather.id === weatherList[i].id){
-          alert("You already added this city");
-          return;
-        }
-      }
-      weatherList.push(weather);
-      localStorage.setItem("weatherList", JSON.stringify(weatherList));
-    }
-    notifyObservers();
-  }*/
 
-
+  // returns all the user's searched cities aka weatherList
   this.getWeatherList = function(){
     weatherList = [];
     db.collection('Searches' + this.getUser() + '').get().then(function(querySnapshot){
           querySnapshot.forEach(function(doc) {
-            console.log(doc.data());
             const data = {
               'id': doc.data().id,
               'name': doc.data().name,
@@ -210,24 +208,11 @@ const Model = function () {
             weatherList.push(data)
           })
         })
-    console.log(weatherList);
+    loading = false;
     return weatherList;
-
-    /*if(weatherList[0] != null){
-      var storedWeather = JSON.parse(localStorage.getItem("weatherList"));
-      if(storedWeather[0] != null){
-        weatherList = storedWeather;
-      }
-    }else{
-      var storedWeather = JSON.parse(localStorage.getItem("weatherList"));
-      if(storedWeather[0] != null){
-        weatherList = storedWeather;
-      }
-    }
-    return weatherList;*/
   }
 
-  // remove city from list of destinations
+  // remove city from the user's list of cities
   this.removeFromWeatherList = function(obj){
 
     for(var i=0; i< weatherList.length; i++){
@@ -235,7 +220,6 @@ const Model = function () {
         weatherList.splice(i, 1);
         db.collection('Searches' + this.getUser()).doc('city' + obj.id).delete().then(function(){
           console.log("successfully deleted")
-          alert("city removed from your search results");
         }).catch(function(error){
           alert("failed to remove city from your search results");
           console.error("error removing searh results", error);
@@ -244,16 +228,6 @@ const Model = function () {
       }
     }
     notifyObservers();
-
-
-    /*for(var i=0; i< weatherList.length; i++){
-      if(id === weatherList[i].id){
-        weatherList.splice(i, 1);
-        localStorage.setItem("weatherList", JSON.stringify(weatherList));
-        return;
-      }
-    }
-    notifyObservers();*/
   }
 
   // calculating the temperature/cloud/ or humidity values for the selected amount of days
@@ -305,9 +279,7 @@ const Model = function () {
 
 
   this.getWeather = function (id) {
-    //https://api.openweathermap.org/data/2.5/forecast?id={city ID}
     const url = "https://api.openweathermap.org/data/2.5/weather?id=" + id + "&APPID=6136693860b8ed827adace0ea28df125"
-    
     return fetch(url)
       .then(processResponse)
       .catch(handleError)
@@ -336,8 +308,6 @@ const Model = function () {
 
   this.addObserver = function (observer) {
     observers.push(observer);
-    
-
   };
 
   this.removeObserver = function (observer) {
