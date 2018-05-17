@@ -141,8 +141,43 @@ const Model = function () {
   }
 
   // pushing the weather object to our weatherList containing the weather of the destinations the user has chosen
-  this.setWeatherList = function (weather){
+  this.setWeatherList = function (obj){
+    db.collection('Searches' + this.getUser() + '/').doc("city" + obj.id).set({
+      id: obj.id,
+      name: obj.name,
+      clouds: obj.clouds.all,
+      temp: obj.main.temp,
+      info: obj.weather[0].description
+    }).then(function(){
+      console.log("success");
+    })
+    .catch(function(error){
+      console.error("error", error);
+    });
+
+    var weatherData = {
+      id: obj.id,
+      name: obj.name,
+      clouds: obj.clouds.all,
+      temp: obj.main.temp,
+      info: obj.weather[0].description
+    }
     if(weatherList.length === 0){
+      weatherList.push(weatherData);
+      
+    }else{
+      for(var i=0; i<weatherList.length; i++){
+        if(weatherData.id === weatherList[i].id){
+            alert("You already added this city");
+            return;
+          }
+      }
+      weatherList.push(weatherData);    
+    }
+    notifyObservers();
+  }
+
+    /*if(weatherList.length === 0){
       weatherList.push(weather);
       localStorage.setItem("weatherList", JSON.stringify(weatherList));
     }
@@ -157,11 +192,28 @@ const Model = function () {
       localStorage.setItem("weatherList", JSON.stringify(weatherList));
     }
     notifyObservers();
-  }
+  }*/
 
 
   this.getWeatherList = function(){
-    if(weatherList[0] != null){
+    weatherList = [];
+    db.collection('Searches' + this.getUser() + '').get().then(function(querySnapshot){
+          querySnapshot.forEach(function(doc) {
+            console.log(doc.data());
+            const data = {
+              'id': doc.data().id,
+              'name': doc.data().name,
+              'clouds': doc.data().clouds,
+              'temp': doc.data().temp,
+              'info': doc.data().info
+            }
+            weatherList.push(data)
+          })
+        })
+    console.log(weatherList);
+    return weatherList;
+
+    /*if(weatherList[0] != null){
       var storedWeather = JSON.parse(localStorage.getItem("weatherList"));
       if(storedWeather[0] != null){
         weatherList = storedWeather;
@@ -172,19 +224,36 @@ const Model = function () {
         weatherList = storedWeather;
       }
     }
-    return weatherList;
+    return weatherList;*/
   }
 
   // remove city from list of destinations
-  this.removeFromWeatherList = function(id){
+  this.removeFromWeatherList = function(obj){
+
     for(var i=0; i< weatherList.length; i++){
+      if(obj.id === weatherList[i].id){
+        weatherList.splice(i, 1);
+        db.collection('Searches' + this.getUser()).doc('city' + obj.id).delete().then(function(){
+          console.log("successfully deleted")
+          alert("city removed from your search results");
+        }).catch(function(error){
+          alert("failed to remove city from your search results");
+          console.error("error removing searh results", error);
+        });
+        return;
+      }
+    }
+    notifyObservers();
+
+
+    /*for(var i=0; i< weatherList.length; i++){
       if(id === weatherList[i].id){
         weatherList.splice(i, 1);
         localStorage.setItem("weatherList", JSON.stringify(weatherList));
         return;
       }
     }
-    notifyObservers();
+    notifyObservers();*/
   }
 
   // calculating the temperature/cloud/ or humidity values for the selected amount of days

@@ -24,7 +24,7 @@
               </div>
             </div>
             <div class="row">
-              <h3>Favorites</h3>
+              <h3>Favorites for user {{getUser()}}</h3>
               <div class="col-12" v-for="(city, index) in favorites">
                 <div class="row">
                   <div class="col-1" @click="removeFavorite(favorites[index])">
@@ -107,6 +107,10 @@ import {modelInstance} from "./Model";
         //this.favorites = modelInstance.getFavorites();
         //this.favorites = [];
         //this.favorites = modelInstance.getFavorites();
+      },
+
+      getUser(){
+        return modelInstance.getUser();
       },
 
       getSearchOptions(str){

@@ -3,13 +3,13 @@
 		<div class="container-fluid">
       <div class="row">
 
-        <div v-for="(city, index) in weatherList" class="col-12 col-md-4 mt-4">
+        <div v-for="(city, index) in weatherList" class="col-12 col-md-4 mt-4 pr-1">
           <div id="result2">
             <div class="row">
-              <div class="col-1"  @click="remove(weatherList[weatherList.length - index -1].id)">
+              <div class="col-1"  @click="remove(weatherList[weatherList.length - index -1])">
                 <div class='box'>&#9746</div>
               </div>
-              <div class="col-1 offset-8" @click="addToFavorites(weatherList[weatherList.length - index -1])">
+              <div class="col-1 offset-9" @click="addToFavorites(weatherList[weatherList.length - index -1])">
                 <div class='star'>&#9733</div>
               </div>
             </div>
@@ -22,15 +22,15 @@
                   </div>
 
                   <div class="col-12 text-center">
-                    <h6>Clouds: {{weatherList[weatherList.length - index - 1].clouds.all}} %</h6>
+                    <h6>Clouds: {{weatherList[weatherList.length - index - 1].clouds}} %</h6>
                   </div>
 
                   <div class="col-12 text-center">
-                    <h6>Temp: {{Math.round(weatherList[weatherList.length - index - 1].main.temp - 273.15)}} C</h6>
+                    <h6>Temp: {{Math.round(weatherList[weatherList.length - index - 1].temp - 273.15)}} C</h6>
                   </div>
 
                   <div class="col-12 text-center">
-                    <h6>{{weatherList[weatherList.length - index - 1].weather[0].description}}</h6>
+                    <h6>{{weatherList[weatherList.length - index - 1].info}}</h6>
                   </div>
                 </router-link>
               </div>
@@ -72,8 +72,8 @@ import {modelInstance} from "./Model";
         modelInstance.setCurrentCity(id);
       },
 
-      remove(id){
-        modelInstance.removeFromWeatherList(id);
+      remove(obj){
+        modelInstance.removeFromWeatherList(obj);
       },
 
       update(){

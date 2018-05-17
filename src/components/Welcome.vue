@@ -9,12 +9,15 @@
             <label for="exampleInputEmail1">User ID</label>
             <input v-model="message" type="email" class="form-control" id="exampleInputEmail1" ref="user" aria-describedby="emailHelp" placeholder="Enter user ID">
           </div>
-          <div class="form-group">
+          <!--<div class="form-group">
             <label for="exampleInputPassword1">Password</label>
             <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-          </div>
+          </div>-->
           <div class="submitting" @click="clicked()">
-            <router-link class='btn btn-primary' to="/destinations" exact>Submit</router-link>
+            <div v-if="this.message == 1 || this.message == 2">
+              <router-link class='btn btn-primary' to="/destinations" exact>Submit</router-link>
+            </div>
+            <div v-else>User ID must be either 1 or 2</div>
           </div>
         </form>
  <!--       <div class="col-12">
