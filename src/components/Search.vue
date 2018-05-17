@@ -83,7 +83,7 @@ import {modelInstance} from "./Model";
 
       getSearchOptions(str){
         console.log("enter")
-        this.cities = modelInstance.autoComplete(str)
+        this.cities = modelInstance.getCities(str)
       },
 
       // when a city is clicked in the drop down menu

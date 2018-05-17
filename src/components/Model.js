@@ -27,47 +27,26 @@ const Model = function () {
     return loading;
   }
 
-  // we choose how many cities we want to be able to search from. more cities -> slower
-  // the cities are then taken from the database (containing the JSON-file) in Firebase put in a special list called 'cities' 
-  this.getCities = function(){
+  /* we choose how many cities we want to be able to search from. more cities -> slower
+  the cities are then taken from the database (containing the JSON-file) in Firebase put in a special list called 'cities' */
+  this.getCities = function(str){
     // we want to be able to search from 5000 cities. this can be changed but affects speed. database contains ca 250 000 cities
-    for(var i=0; i<5000;i++){
-      database.ref(i).on('value', function(snapshot) {
-        cities.push(snapshot.val());
-      });
-    }
-  }
-
-
-  //autocompletion of cities in the search bar
-  this.autoComplete = function (str){
-    var results = [];
-    var nrOfResults = 1;
-
-   if (str.length >= 1) {
-      nrOfResults = 0;
-      for (var i = 0; i < cities.length; i++) {
-        if (cities[i].name.startsWith(str)) {
-          results.push(cities[i]);
-          nrOfResults++;
-        }
+    cities = []
+    if(str.length >= 1){
+      for(var i=0; i<5000;i++){
+        database.ref(i).on('value', function(snapshot) {
+          if(snapshot.val().name.toLowerCase().startsWith(str)){
+            cities.push(snapshot.val());
+          }
+          if (cities.length >= 10) {
+            cities = cities.slice(0,10);
+            cities.sort();
+            return cities;
+          }
+        });
       }
     }
-    //we only want to show 10 cities in the autocompletion of the search bar
-    if(nrOfResults < 10 && nrOfResults >= 1) {
-      results.sort();
-      return results;
-    }
-    else if(nrOfResults > 10) {
-      nrOfResults = 10;
-      results = results.slice(0,nrOfResults);
-      results.sort();
-      return results;
-    }
-    else{
-      results = [];
-      return results;
-    }
+    return cities;
   }
 
   // the users favorite-cities are set here
