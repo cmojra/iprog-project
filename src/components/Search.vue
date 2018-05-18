@@ -82,7 +82,6 @@ import {modelInstance} from "./Model";
       },
 
       getSearchOptions(str){
-        console.log("enter")
         this.cities = modelInstance.getCities(str)
       },
 

@@ -2,8 +2,6 @@
   <div class="col-12 offset-md-3 col-md-9" id="rightContainer">
 		<div class="container-fluid">
       <div class="row">
-
-        <em v-if="loading === true">Loading...</em>
         <div v-for="(city, index) in weatherList" class="col-12 col-md-4 mt-4 pr-1">
           <div id="result2">
             <div class="row">
@@ -121,6 +119,7 @@ a:hover,  a:visited,  a:link,  a:active {
 .star{
   background: rgba(0, 0, 0, 0.1);
   font-size: 30px;
+  color: white;
 }
 
 .box{

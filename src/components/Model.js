@@ -51,13 +51,12 @@ const Model = function () {
 
   // the users favorite-cities are set here
   this.setFavorites = function(obj){
-    console.log(this.getUser());
     db.collection('favourites' + this.getUser() + '/').doc("city" + obj.id).set({
       id: obj.id,
       name: obj.name
     })
     .then(function(){
-      console.log("success");
+      console.log("Success");
     })
     .catch(function(error){
       console.error("error", error);
@@ -99,7 +98,6 @@ const Model = function () {
       if(obj.id === favorites[i].id){
         favorites.splice(i, 1);
         db.collection('favourites' + this.getUser()).doc('city' + obj.id).delete().then(function(){
-          console.log("successfully deleted")
         }).catch(function(error){
           alert("failed to remove city from favorites");
           console.error("error removing favorites", error);
