@@ -9,8 +9,6 @@ Search for desired destination and receive information about temperature, humidi
 
 When clicking on chosen destination more detailed data about the weather conditions are displayed, and the user can also observe mean values of the weather data over chosen amount of days.
 
-OBS! Firebase deployment is under construction, please use localHost to run the application!
-
 <hr>
 
 ## File Structure
@@ -41,7 +39,7 @@ JSON file with all available cities. This file enables autocomplete in the searc
 
 # iprog-firebase
 
-> Deploy Vue-application to firebase. Hosting.
+> Application is Hosted by firebase at: https://iprog-project-76738.firebaseapp.com/
 
 ## Build Setup
 
